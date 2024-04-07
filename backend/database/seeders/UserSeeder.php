@@ -20,11 +20,13 @@ class UserSeeder extends Seeder
                 'name' => 'admin',
                 'email' => 'admin@test.com',
                 'password' => Hash::make($_ENV['ADMIN_USER_PASSWORD']),
+                'isAdmin' => true,
             ],
             [
                 'name' => 'test',
                 'email' => 'test@test.com',
                 'password' => Hash::make($_ENV['TEST_USER_PASSWORD']),
+                'isAdmin' => false,
             ],
         ]);
     }
