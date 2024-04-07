@@ -20,6 +20,8 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       TZ: ${TZ}
+    ports:
+      - 33060:3306
     volumes:
       - db-store:/var/lib/mysql
 
