@@ -24,6 +24,7 @@ export default function Login() {
         axios
           .post("http://localhost:8080/login", loginParams, {
             withCredentials: true,
+            withXSRFToken: true,
           })
           .then((response) => {
             console.log(response.data);
