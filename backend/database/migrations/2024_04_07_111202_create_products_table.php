@@ -18,7 +18,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('image');
-            $table->string('category');
+            // $table->string('category');
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->text('description');
             $table->decimal('rating', 3, 1)->default(0);
             $table->unsignedInteger('num_reviews')->default(0);
