@@ -24,8 +24,8 @@ class ProductSeeder extends Seeder
                 'contract_type' => "単発契約",
                 'category_id' => 1,
                 'price' => 1500,
-                'rating' => 4.5,
-                'num_reviews' => 12,
+                // 'rating' => 4.5,
+                // 'num_reviews' => 12,
             ],
             [
                 'name' => "ボーカルレッスン",
@@ -35,8 +35,8 @@ class ProductSeeder extends Seeder
                 'contract_type' => "単発契約",
                 'category_id' => 2,
                 'price' => 1600,
-                'rating' => 4.0,
-                'num_reviews' => 8,
+                // 'rating' => 4.0,
+                // 'num_reviews' => 8,
             ],
             [
                 'name' => "メイクレッスン",
@@ -46,8 +46,8 @@ class ProductSeeder extends Seeder
                 'contract_type' => "単発契約",
                 'category_id' => 3,
                 'price' => 1800,
-                'rating' => 3,
-                'num_reviews' => 12,
+                // 'rating' => 3,
+                // 'num_reviews' => 12,
             ],
             [
                 'name' => "食事管理方法伝授",
@@ -57,8 +57,8 @@ class ProductSeeder extends Seeder
                 'contract_type' => "単発契約",
                 'category_id' => 4,
                 'price' => 1200,
-                'rating' => 5,
-                'num_reviews' => 12,
+                // 'rating' => 5,
+                // 'num_reviews' => 12,
             ],
             [
                 'name' => "週一ダンスレッスン",
@@ -68,8 +68,8 @@ class ProductSeeder extends Seeder
                 'contract_type' => "月契約",
                 'category_id' => 1,
                 'price' => 5000,
-                'rating' => 4.5,
-                'num_reviews' => 10,
+                // 'rating' => 4.5,
+                // 'num_reviews' => 10,
             ],
             [
                 'name' => "週一ボーカルレッスン",
@@ -80,8 +80,8 @@ class ProductSeeder extends Seeder
                 'contract_type' => "月契約",
                 'category_id' => 2,
                 'price' => 5500,
-                'rating' => 4,
-                'num_reviews' => 8,
+                // 'rating' => 4,
+                // 'num_reviews' => 8,
             ],
         ]);
     }

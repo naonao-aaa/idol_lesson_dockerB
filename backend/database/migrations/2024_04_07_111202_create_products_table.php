@@ -21,8 +21,8 @@ return new class extends Migration
             // $table->string('category');
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->text('description');
-            $table->decimal('rating', 3, 1)->default(0);
-            $table->unsignedInteger('num_reviews')->default(0);
+            // $table->decimal('rating', 3, 1)->default(0);
+            // $table->unsignedInteger('num_reviews')->default(0);
             $table->integer('price')->default(0);
             $table->enum('contract_type', ['月契約', '単発契約']);
             $table->timestamps();
