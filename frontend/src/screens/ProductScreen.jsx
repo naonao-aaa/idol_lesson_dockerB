@@ -1,13 +1,39 @@
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import {
+  Form,
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Card,
+  Button,
+} from "react-bootstrap";
 import { useGetProductDetailsQuery } from "../slices/productsApiSlice";
 import Rating from "../components/Rating";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import { addToCart } from "../slices/cartSlice";
 
 const ProductScreen = () => {
   const { id: productId } = useParams();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [qty, setQty] = useState(1);
+
+  const addToCartHandler = () => {
+    if (product.contract_type === "単発契約") {
+      dispatch(addToCart({ ...product, qty }));
+    } else if (product.contract_type === "月契約") {
+      dispatch(addToCart({ ...product, qty: 1 }));
+    }
+    navigate("/cart");
+  };
+
   const {
     data: product,
     isLoading,
@@ -64,11 +90,34 @@ const ProductScreen = () => {
                       <Col>{product.contract_type}</Col>
                     </Row>
                   </ListGroup.Item>
+
+                  {product.contract_type === "単発契約" && (
+                    <ListGroup.Item>
+                      <Row>
+                        <Col>回数</Col>
+                        <Col>
+                          <Form.Control
+                            as="select"
+                            value={qty}
+                            onChange={(e) => setQty(Number(e.target.value))}
+                          >
+                            {Array.from({ length: 5 }).map((_, index) => (
+                              <option key={index + 1} value={index + 1}>
+                                {index + 1}
+                              </option>
+                            ))}
+                          </Form.Control>
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                  )}
+
                   <ListGroup.Item>
                     <Button
                       className="btn-block"
                       type="button"
                       disabled={product.countInStock === 0}
+                      onClick={addToCartHandler}
                     >
                       カートに入れる
                     </Button>
