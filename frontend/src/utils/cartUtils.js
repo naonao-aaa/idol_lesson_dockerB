@@ -1,17 +1,4 @@
-export const updateCart = (state, item) => {
-  // カート内に、同じidを持つアイテムが既に存在するかどうかを確認する。
-  const existItem = state.cartItems.find((x) => x.id === item.id);
-
-  if (existItem) {
-    // カート内に同じアイテムが既に存在する場合、そのアイテムの数量を更新する。
-    state.cartItems = state.cartItems.map((x) =>
-      x.id === existItem.id ? item : x
-    );
-  } else {
-    // カート内に同じアイテムが存在しない場合は、新しいアイテムとしてカートに追加する。
-    state.cartItems = [...state.cartItems, item];
-  }
-
+export const updateCart = (state) => {
   // カート内の全てのアイテムの価格を合計して、state.itemsPriceに代入する。
   state.itemsPrice = state.cartItems.reduce(
     (acc, item) => acc + item.price * item.qty,
