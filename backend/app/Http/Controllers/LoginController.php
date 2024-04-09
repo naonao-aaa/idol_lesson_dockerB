@@ -22,6 +22,8 @@ class LoginController extends Controller
             return response()->json(['user' => Auth::user()], 200);
         }
 
-        throw new Exception('ログインに失敗しました。再度お試しください');
+        // 認証エラー
+        // throw new Exception('IDまたはパスワードが間違っています。');
+        return response()->json(['message' => 'IDまたはパスワードが間違っています。'], 401);
     }
 }
