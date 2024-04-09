@@ -2,11 +2,16 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../components/FormContainer";
+import { setCredentials } from "../slices/authSlice";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -25,6 +30,7 @@ export default function Login() {
           })
           .then((response) => {
             console.log(response.data);
+            dispatch(setCredentials({ ...response.data }));
           })
           .catch((error) => {
             console.log(error.response.data.message);
