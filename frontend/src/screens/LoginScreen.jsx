@@ -5,6 +5,7 @@ import { Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../components/FormContainer";
 import { setCredentials } from "../slices/authSlice";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -12,6 +13,18 @@ export default function Login() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const { search } = useLocation();
+  const sp = new URLSearchParams(search);
+  const redirect = sp.get("redirect") || "/";
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate(redirect);
+    }
+  }, [navigate, redirect, userInfo]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -31,6 +44,7 @@ export default function Login() {
           .then((response) => {
             console.log(response.data);
             dispatch(setCredentials({ ...response.data.user }));
+            navigate(redirect);
           })
           .catch((error) => {
             console.log(error.response.data.message);
@@ -64,14 +78,18 @@ export default function Login() {
             ></Form.Control>
           </Form.Group>
 
-          <Button type="submit" variant="primary">
+          <Button type="submit" variant="primary" className="mt-2">
             ログイン
           </Button>
         </Form>
 
         <Row className="py-3">
           <Col>
-            <Link to="/register">アカウントをお持ちではない方はこちら</Link>
+            <Link
+              to={redirect ? `/register?redirect=${redirect}` : "/register"}
+            >
+              アカウントをお持ちではない方はこちら
+            </Link>
           </Col>
         </Row>
       </FormContainer>
