@@ -30,7 +30,7 @@ export default function Login() {
           })
           .then((response) => {
             console.log(response.data);
-            dispatch(setCredentials({ ...response.data }));
+            dispatch(setCredentials({ ...response.data.user }));
           })
           .catch((error) => {
             console.log(error.response.data.message);
