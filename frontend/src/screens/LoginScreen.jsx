@@ -1,4 +1,5 @@
 import axios from "axios";
+import { BASE_URL } from "../constants";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col } from "react-bootstrap";
@@ -31,13 +32,13 @@ export default function Login() {
     const loginParams = { email, password };
     axios
       // CSRF保護の初期化。（ログイン処理を行う前に行うもの！）
-      .get("http://localhost:8080/sanctum/csrf-cookie", {
+      .get(`${BASE_URL}/sanctum/csrf-cookie`, {
         withCredentials: true,
       })
       .then((response) => {
         // ログイン処理
         axios
-          .post("http://localhost:8080/login", loginParams, {
+          .post(`${BASE_URL}/login`, loginParams, {
             withCredentials: true,
             withXSRFToken: true,
           })
