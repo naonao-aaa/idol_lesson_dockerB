@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { logout } from "../slices/authSlice";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../constants";
+import Cookies from "universal-cookie";
 
 const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
@@ -15,23 +16,31 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const cookies = new Cookies();
+  const xsrfToken = cookies.get("XSRF-TOKEN"); // Cookieの「XSRF-TOKEN」から値を取得する。
+
   const logoutHandler = async () => {
-    axios
-      .post(
-        `${BASE_URL}/api/users/logout`,
-        {},
-        {
-          withCredentials: true,
-          withXSRFToken: true,
-        }
-      )
-      .then((response) => {
-        dispatch(logout());
-        navigate("/login");
-      })
-      .catch((error) => {
-        toast.error(error?.response?.data?.message || error.message);
-      });
+    if (!xsrfToken) {
+      await dispatch(logout());
+      navigate("/login");
+    } else {
+      axios
+        .post(
+          `${BASE_URL}/api/users/logout`,
+          {},
+          {
+            withCredentials: true,
+            withXSRFToken: true,
+          }
+        )
+        .then((response) => {
+          dispatch(logout());
+          navigate("/login");
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.message || error.message);
+        });
+    }
   };
 
   return (
