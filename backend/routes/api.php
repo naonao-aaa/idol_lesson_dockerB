@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,3 +28,6 @@ Route::get('/products/{product}', [ProductController::class, 'show']);
 
 // ログアウト
 Route::middleware('auth:sanctum')->post('/users/logout', [LoginController::class, 'logout']);
+
+// ユーザー登録
+Route::post('/users/register', [UserController::class, 'register']);
