@@ -35,3 +35,5 @@ Route::post('/users/register', [UserController::class, 'register']);
 
 //新しい注文を作成する
 Route::middleware('auth:sanctum')->post('/orders', [OrderController::class, 'store']);
+//注文IDで注文を取得する
+Route::middleware('auth:sanctum')->get('/orders/{order}', [OrderController::class, 'show']);
