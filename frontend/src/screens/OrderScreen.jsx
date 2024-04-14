@@ -11,6 +11,7 @@ const OrderScreen = () => {
   const { id: orderId } = useParams();
 
   const [order, setOrder] = useState("");
+  const [error, setError] = useState("");
 
   const fetchOrderDetail = () => {
     axios
@@ -23,7 +24,8 @@ const OrderScreen = () => {
         setOrder(response.data.order);
       })
       .catch((error) => {
-        toast.error(error?.response?.data?.message || error.message);
+        setError(error?.response?.data?.message);
+        // toast.error(error?.response?.data?.message || error.message);
       });
   };
 
@@ -134,6 +136,8 @@ const OrderScreen = () => {
         </Col>
       </Row>
     </>
+  ) : error ? (
+    <Message variant="danger">{error}</Message>
   ) : (
     <Loader />
   );
