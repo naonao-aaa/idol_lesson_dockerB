@@ -8,6 +8,7 @@ import { logout } from "../slices/authSlice";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../constants";
 import Cookies from "universal-cookie";
+import { useEffect } from "react";
 
 const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
@@ -18,6 +19,10 @@ const Header = () => {
 
   const cookies = new Cookies();
   const xsrfToken = cookies.get("XSRF-TOKEN"); // Cookieの「XSRF-TOKEN」から値を取得する。
+
+  if (!xsrfToken) {
+    dispatch(logout());
+  }
 
   const logoutHandler = async () => {
     if (!xsrfToken) {
