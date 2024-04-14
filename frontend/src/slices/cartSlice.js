@@ -35,9 +35,17 @@ const cartSlice = createSlice({
       // updateCart関数を実行して、更新されたstateを返す。
       return updateCart(state);
     },
+    clearCartItems: (state, action) => {
+      state.cartItems = [];
+      state.paymentMethod = "PayPal";
+      state.itemsPrice = 0;
+      state.taxPrice = 0;
+      state.totalPrice = 0;
+      localStorage.setItem("cart", JSON.stringify(state));
+    },
   },
 });
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearCartItems } = cartSlice.actions;
 
 export default cartSlice.reducer;

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -31,3 +32,6 @@ Route::middleware('auth:sanctum')->post('/users/logout', [LoginController::class
 
 // ユーザー登録
 Route::post('/users/register', [UserController::class, 'register']);
+
+//新しい注文を作成する
+Route::middleware('auth:sanctum')->post('/orders', [OrderController::class, 'store']);
