@@ -10,6 +10,7 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
+import PrivateRoute from "./components/PrivateRoute";
 import store from "./store";
 import { Provider } from "react-redux";
 import HomeScreen from "./screens/HomeScreen";
@@ -27,7 +28,9 @@ const router = createBrowserRouter(
       <Route path="/login" element={<LoginScreen />} />
       <Route path="/register" element={<RegisterScreen />} />
       <Route path="/cart" element={<CartScreen />} />
-      <Route path="/placeorder" element={<PlaceOrderScreen />} />
+      <Route path="" element={<PrivateRoute />}>
+        <Route path="/placeorder" element={<PlaceOrderScreen />} />
+      </Route>
     </Route>
   )
 );
