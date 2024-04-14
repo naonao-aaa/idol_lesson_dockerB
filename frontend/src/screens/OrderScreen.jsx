@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 const OrderScreen = () => {
   const { id: orderId } = useParams();
 
-  const [order, setOrder] = useState("");
+  const [order, setOrder] = useState(null);
   const [error, setError] = useState("");
 
   const fetchOrderDetail = () => {
@@ -31,7 +31,7 @@ const OrderScreen = () => {
 
   useEffect(() => {
     fetchOrderDetail();
-  }, []);
+  }, [orderId]);
 
   console.log(order);
 
