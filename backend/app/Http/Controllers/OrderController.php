@@ -72,7 +72,21 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        //
+        // 注文が現在のユーザーに属しているかをチェック
+        if ($order->user_id !== Auth::id()) {
+            // エラーレスポンスを返す
+            return response()->json([
+                'message' => 'Order not found.'
+            ], 403); 
+        }
+
+        // 関連データを事前にロード
+        $order->load('products', 'user');
+
+        // 注文情報を含むレスポンスを返す
+        return response()->json([
+            'order' => $order
+        ]);
     }
 
     /**
