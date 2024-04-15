@@ -112,6 +112,43 @@ class OrderController extends Controller
         //
     }
 
+
+    /**
+     * 注文を支払済みにする
+     */
+    public function updateOrderToPaid(Request $request, Order $order)
+    {
+        if (!$order) {
+            // オーダーが見つからない場合は、404エラーとメッセージを返す
+            return response()->json([
+                'message' => 'Order not found'
+            ], 404);
+        }
+    
+        // オーダーが見つかった場合は、支払情報を更新
+        $order->is_paid = true;
+        $order->paidAt = Carbon::now();  // 現在時刻を設定
+        $order->save();
+
+        return response()->json([
+            'message' => 'Order updated to paid successfully.',
+            'order' => $order
+        ]);
+    }
+
+    
+    /**
+     * PayPalのクライアントIDを、フロント側に返す。
+     */
+    public function getPaypalClientId()
+    {
+        $paypalClientId = config('PAYPAL_CLIENT_ID');
+
+        return response()->json([
+            'paypalClientId' => $paypalClientId
+        ]);
+    }
+
     /**
      * Remove the specified resource from storage.
      *

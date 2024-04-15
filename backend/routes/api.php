@@ -37,3 +37,8 @@ Route::post('/users/register', [UserController::class, 'register']);
 Route::middleware('auth:sanctum')->post('/orders', [OrderController::class, 'store']);
 //注文IDで注文を取得する
 Route::middleware('auth:sanctum')->get('/orders/{order}', [OrderController::class, 'show']);
+// 注文を支払済みに更新する
+Route::middleware('auth:sanctum')->put('/orders/{order}/pay', [OrderController::class, 'updateOrderToPaid']);
+
+// PayPalのクライアントIDを、フロント側に返す。
+Route::middleware('auth:sanctum')->get('/config/paypal', [OrderController::class, 'getPaypalClientId']);
