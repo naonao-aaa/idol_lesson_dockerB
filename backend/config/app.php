@@ -212,4 +212,7 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    
+    'PAYPAL_CLIENT_ID' => env('PAYPAL_CLIENT_ID', ''),
+
 ];
