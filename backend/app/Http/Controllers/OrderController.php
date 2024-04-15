@@ -21,6 +21,30 @@ class OrderController extends Controller
     }
 
     /**
+     * (管理者)全ての注文を取得する
+     */
+    public function getOrders()
+    {
+        // ログイン中のユーザー情報を取得
+        $user = Auth::user();
+
+        // ログイン中のユーザーが管理者かどうかをチェック
+        if ($user->isAdmin) {
+            // 管理者の場合は全ての注文情報を取得
+            $orders = Order::all();
+
+            return response()->json([
+                'orders' => $orders
+            ]);
+        } else {
+            // 一般ユーザーの場合は管理者権限がない旨のメッセージを返す
+            return response()->json([
+                'message' => 'You do not have admin privileges to access all orders.'
+            ], 403); 
+        }
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
