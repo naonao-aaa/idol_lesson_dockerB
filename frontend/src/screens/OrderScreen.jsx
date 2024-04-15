@@ -1,7 +1,9 @@
 import axios from "axios";
 import { BASE_URL } from "../constants";
 import { Link, useParams } from "react-router-dom";
-import { Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap";
+import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import { useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { useEffect, useState } from "react";
@@ -12,8 +14,13 @@ const OrderScreen = () => {
 
   const [order, setOrder] = useState(null);
   const [error, setError] = useState("");
+  const [paypalClientId, setPaypalClientId] = useState("");
 
-  const fetchOrderDetail = () => {
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+
+  const fetchOrderData = () => {
     axios
       .get(`${BASE_URL}/api/orders/${orderId}`, {
         withCredentials: true,
@@ -25,15 +32,96 @@ const OrderScreen = () => {
       })
       .catch((error) => {
         setError(error?.response?.data?.message);
-        // toast.error(error?.response?.data?.message || error.message);
       });
   };
 
+  const fetchPaypalClientId = async () => {
+    axios
+      .get(`${BASE_URL}/api/config/paypal`, {
+        withCredentials: true,
+        withXSRFToken: true,
+      })
+      .then((response) => {
+        console.log(response.data);
+        setPaypalClientId(response.data.paypalClientId);
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.message || error.message);
+      });
+  };
+
+  const loadPaypalScript = async () => {
+    paypalDispatch({
+      type: "resetOptions",
+      value: {
+        "client-id": paypalClientId,
+        currency: "JPY",
+      },
+    });
+    paypalDispatch({ type: "setLoadingStatus", value: "pending" });
+  };
+
   useEffect(() => {
-    fetchOrderDetail();
+    fetchOrderData();
+    fetchPaypalClientId();
   }, [orderId]);
 
+  useEffect(() => {
+    if (paypalClientId && order && !order.isPaid && !window.paypal) {
+      loadPaypalScript();
+    }
+  }, [paypalClientId, order]);
+
   console.log(order);
+
+  // PayPal注文承認成功時の処理
+  function onApprove(data, actions) {
+    return actions.order.capture().then(async function (details) {
+      try {
+        await axios
+          .put(
+            `${BASE_URL}/api/orders/${orderId}/pay`,
+            {},
+            {
+              withCredentials: true,
+              withXSRFToken: true,
+            }
+          )
+          .then((response) => {
+            console.log(response.data);
+          })
+          .catch((error) => {
+            toast.error(error?.response?.data?.message || error.message);
+          });
+
+        fetchOrderData();
+
+        toast.success("Order is paid");
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
+    });
+  }
+
+  // PayPalエラー発生時の処理
+  function onError(err) {
+    toast.error(err.message);
+  }
+
+  // PayPal注文作成時の処理
+  function createOrder(data, actions) {
+    return actions.order
+      .create({
+        purchase_units: [
+          {
+            amount: { value: order.total_price },
+          },
+        ],
+      })
+      .then((orderID) => {
+        return orderID;
+      });
+  }
 
   return order ? (
     <>
@@ -50,7 +138,7 @@ const OrderScreen = () => {
                 <strong>Email: </strong>{" "}
                 <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
               </p>
-              {order.isDone ? (
+              {order.is_done ? (
                 <Message variant="success">
                   プラン施行日： {order.done_at}
                 </Message>
@@ -64,7 +152,7 @@ const OrderScreen = () => {
             <ListGroup.Item>
               <h2>お支払い方法</h2>
               <p>PayPal</p>
-              {order.isPaid ? (
+              {order.is_paid ? (
                 <Message variant="success">
                   お支払い日： {order.paid_at}
                 </Message>
@@ -131,6 +219,24 @@ const OrderScreen = () => {
                   <Col>{order.total_price}円</Col>
                 </Row>
               </ListGroup.Item>
+
+              {!order.is_paid && (
+                <ListGroup.Item>
+                  {isPending ? (
+                    <Loader />
+                  ) : (
+                    <div>
+                      <div>
+                        <PayPalButtons
+                          createOrder={createOrder}
+                          onApprove={onApprove}
+                          onError={onError}
+                        ></PayPalButtons>
+                      </div>
+                    </div>
+                  )}
+                </ListGroup.Item>
+              )}
             </ListGroup>
           </Card>
         </Col>

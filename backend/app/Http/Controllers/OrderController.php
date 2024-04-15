@@ -127,12 +127,11 @@ class OrderController extends Controller
     
         // オーダーが見つかった場合は、支払情報を更新
         $order->is_paid = true;
-        $order->paidAt = Carbon::now();  // 現在時刻を設定
+        $order->paid_at = Carbon::now();  // 現在時刻を設定
         $order->save();
 
         return response()->json([
             'message' => 'Order updated to paid successfully.',
-            'order' => $order
         ]);
     }
 
@@ -142,7 +141,7 @@ class OrderController extends Controller
      */
     public function getPaypalClientId()
     {
-        $paypalClientId = config('PAYPAL_CLIENT_ID');
+        $paypalClientId = config('app.PAYPAL_CLIENT_ID');
 
         return response()->json([
             'paypalClientId' => $paypalClientId
