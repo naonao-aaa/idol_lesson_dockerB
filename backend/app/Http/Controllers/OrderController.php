@@ -21,6 +21,30 @@ class OrderController extends Controller
     }
 
     /**
+     * (管理者)全ての注文を取得する
+     */
+    public function getOrders()
+    {
+        // ログイン中のユーザー情報を取得
+        $user = Auth::user();
+
+        // ログイン中のユーザーが管理者かどうかをチェック
+        if ($user->isAdmin) {
+            // 管理者の場合は全ての注文情報を取得し、関連するユーザーモデルをロードする
+            $orders = Order::with('user')->get();
+
+            return response()->json([
+                'orders' => $orders
+            ]);
+        } else {
+            // 一般ユーザーの場合は管理者権限がない旨のメッセージを返す
+            return response()->json([
+                'message' => 'You do not have admin privileges to access all orders.'
+            ], 403); 
+        }
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -72,12 +96,15 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        // 注文が現在のユーザーに属しているかをチェック
-        if ($order->user_id !== Auth::id()) {
-            // エラーレスポンスを返す
-            return response()->json([
-                'message' => 'Order not found.'
-            ], 403); 
+        // 管理者ではなかったら
+        if(!Auth::user()->isAdmin) {
+            // 注文が現在のユーザーに属しているかをチェック
+            if ($order->user_id !== Auth::id()) {
+                // エラーレスポンスを返す
+                return response()->json([
+                    'message' => 'Order not found.'
+                ], 403); 
+            }
         }
 
         // 関連データを事前にロード
