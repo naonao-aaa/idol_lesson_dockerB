@@ -32,6 +32,8 @@ Route::middleware('auth:sanctum')->post('/users/logout', [LoginController::class
 
 // ユーザー登録
 Route::post('/users/register', [UserController::class, 'register']);
+// ユーザープロフィールの更新
+Route::middleware('auth:sanctum')->put('/users/profile', [UserController::class, 'updateUserProfile']);
 
 //新しい注文を作成する
 Route::middleware('auth:sanctum')->post('/orders', [OrderController::class, 'store']);
