@@ -140,7 +140,7 @@ const OrderScreen = () => {
               </p>
               {order.is_done ? (
                 <Message variant="success">
-                  プラン施行日： {order.done_at}
+                  プラン施行日： {order.done_at.substring(0, 10)}
                 </Message>
               ) : (
                 <Message variant="danger">
@@ -154,7 +154,7 @@ const OrderScreen = () => {
               <p>PayPal</p>
               {order.is_paid ? (
                 <Message variant="success">
-                  お支払い日： {order.paid_at}
+                  お支払い日： {order.paid_at.substring(0, 10)}
                 </Message>
               ) : (
                 <Message variant="danger">
