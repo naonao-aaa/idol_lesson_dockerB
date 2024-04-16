@@ -30,8 +30,8 @@ class OrderController extends Controller
 
         // ログイン中のユーザーが管理者かどうかをチェック
         if ($user->isAdmin) {
-            // 管理者の場合は全ての注文情報を取得
-            $orders = Order::all();
+            // 管理者の場合は全ての注文情報を取得し、関連するユーザーモデルをロードする
+            $orders = Order::with('user')->get();
 
             return response()->json([
                 'orders' => $orders
@@ -96,12 +96,15 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        // 注文が現在のユーザーに属しているかをチェック
-        if ($order->user_id !== Auth::id()) {
-            // エラーレスポンスを返す
-            return response()->json([
-                'message' => 'Order not found.'
-            ], 403); 
+        // 管理者ではなかったら
+        if(!Auth::user()->isAdmin) {
+            // 注文が現在のユーザーに属しているかをチェック
+            if ($order->user_id !== Auth::id()) {
+                // エラーレスポンスを返す
+                return response()->json([
+                    'message' => 'Order not found.'
+                ], 403); 
+            }
         }
 
         // 関連データを事前にロード
