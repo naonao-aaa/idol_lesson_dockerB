@@ -32,6 +32,8 @@ Route::middleware('auth:sanctum')->post('/users/logout', [LoginController::class
 
 // ユーザー登録
 Route::post('/users/register', [UserController::class, 'register']);
+// ユーザープロフィールの更新
+Route::middleware('auth:sanctum')->put('/users/profile', [UserController::class, 'updateUserProfile']);
 
 //新しい注文を作成する
 Route::middleware('auth:sanctum')->post('/orders', [OrderController::class, 'store']);
@@ -39,6 +41,8 @@ Route::middleware('auth:sanctum')->post('/orders', [OrderController::class, 'sto
 Route::middleware('auth:sanctum')->get('/orders/{order}', [OrderController::class, 'show']);
 // 注文を支払済みに更新する
 Route::middleware('auth:sanctum')->put('/orders/{order}/pay', [OrderController::class, 'updateOrderToPaid']);
+// 自分(ログインユーザー)の注文を取得する。（「/orders/mine」や「/orders/my」のようなエンドポイントにすると、「No query results for model [App\Models\Order] 」というエラーが出た。一先ず「/my/orders」とすることで成功した。）
+Route::middleware('auth:sanctum')->get('/my/orders', [OrderController::class, 'getMyOrders']);
 // (管理者)全ての注文を取得する
 Route::middleware('auth:sanctum')->get('/admin/orders', [OrderController::class, 'getOrders']);
 

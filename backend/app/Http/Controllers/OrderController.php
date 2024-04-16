@@ -21,6 +21,22 @@ class OrderController extends Controller
     }
 
     /**
+     * 自分(ログインユーザー)の注文を取得する
+     */
+    public function getMyOrders()
+    {
+        // ログイン中のユーザーのIDを取得
+        $userId = Auth::id();
+
+        // ユーザーに関連する注文を取得
+        $orders = Order::where('user_id', $userId)->get();
+
+        return response()->json([
+            'orders' => $orders
+        ]);
+    }
+
+    /**
      * (管理者)全ての注文を取得する
      */
     public function getOrders()
