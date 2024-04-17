@@ -178,6 +178,37 @@ class OrderController extends Controller
         ]);
     }
 
+    /**
+     * (管理者) 注文プランを遂行済みに更新する
+     */
+    public function updateOrderToCompletion(Request $request, Order $order)
+    {
+        // ログイン中のユーザー情報を取得
+        $user = Auth::user();
+
+        // ユーザーが管理者でない場合はエラーメッセージを返す
+        if (!$user->isAdmin) {
+            return response()->json([
+                'message' => 'この操作の実行には管理者権限が必要です。',
+            ], 403);
+        }
+
+        //注文が存在する場合は、プラン遂行済みに更新する。
+        if($order) {
+            $order->is_done = true;
+            $order->done_at = Carbon::now();
+            $order->save();
+
+            return response()->json([
+                'message' => 'Order updated to completion successfully.'
+            ]);
+        } else {
+            return response()->json([
+                'message' => '指定された注文が見つかりませんでした。',
+            ]);
+        }
+    }
+
     
     /**
      * PayPalのクライアントIDを、フロント側に返す。

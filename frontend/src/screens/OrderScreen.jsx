@@ -123,6 +123,26 @@ const OrderScreen = () => {
       });
   }
 
+  const completionOrderHandler = async () => {
+    axios
+      .put(
+        `${BASE_URL}/api/admin/orders/${orderId}/completion`,
+        {},
+        {
+          withCredentials: true,
+          withXSRFToken: true,
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        fetchOrderData();
+        toast.success(response.data.message);
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.errorMessage || error.message);
+      });
+  };
+
   return order ? (
     <>
       <h1>お申し込みID: {order.id}</h1>
@@ -236,6 +256,23 @@ const OrderScreen = () => {
                     </div>
                   )}
                 </ListGroup.Item>
+              )}
+
+              {userInfo &&
+              userInfo.isAdmin &&
+              order.is_paid &&
+              !order.is_done ? (
+                <ListGroup.Item>
+                  <Button
+                    type="button"
+                    className="btn btn-block"
+                    onClick={completionOrderHandler}
+                  >
+                    プラン施行完了
+                  </Button>
+                </ListGroup.Item>
+              ) : (
+                ""
               )}
             </ListGroup>
           </Card>
