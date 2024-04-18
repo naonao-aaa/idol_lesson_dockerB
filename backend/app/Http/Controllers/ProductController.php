@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -17,6 +18,30 @@ class ProductController extends Controller
         $products = Product::get();
 
         return response()->json($products);
+    }
+
+    /**
+     * (管理者)全てのプランを取得する
+     */
+    public function getProducts()
+    {
+        // ログイン中のユーザー情報を取得
+        $user = Auth::user();
+
+        // ログイン中のユーザーが管理者かどうかをチェック
+        if ($user->isAdmin) {
+            // 管理者の場合は全てのプラン情報をする
+            $products = Product::with('category')->get();
+
+            return response()->json([
+                'products' => $products
+            ]);
+        } else {
+            // 一般ユーザーの場合は管理者権限がない旨のメッセージを返す
+            return response()->json([
+                'message' => 'You do not have admin privileges to access all products.'
+            ], 403); 
+        }
     }
 
     /**
