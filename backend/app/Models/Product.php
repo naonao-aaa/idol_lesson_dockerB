@@ -14,4 +14,9 @@ class Product extends Model
         return $this->belongsToMany(Order::class, 'order_product')
         ->withPivot(['id', 'quantity']);
     }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

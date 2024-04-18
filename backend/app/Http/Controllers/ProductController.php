@@ -31,7 +31,7 @@ class ProductController extends Controller
         // ログイン中のユーザーが管理者かどうかをチェック
         if ($user->isAdmin) {
             // 管理者の場合は全てのプラン情報をする
-            $products = Product::get();
+            $products = Product::with('category')->get();
 
             return response()->json([
                 'products' => $products
