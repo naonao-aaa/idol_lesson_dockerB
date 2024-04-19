@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -55,14 +56,51 @@ class ProductController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * (管理者)プランを作成する
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
+        // ログイン中のユーザー情報を取得し、管理者かどうかをチェック
+        if (!Auth::check() || !Auth::user()->isAdmin) {
+            return response()->json(['message' => 'You do not have admin privileges to create products.'], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB
+            'contract_type' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        //画像名をランダムに設定して、storage/app/public/images/productsフォルダに保存される。
+        $path = $request->file('image')->store('images/products', 'public');
+
+        $product = new Product([
+            'user_id' => Auth::id(),
+            'name' => $request->name,
+            'price' => $request->price,
+            'image' => $path,
+            'contract_type' => $request->contract_type,
+            'category_id' => $request->category_id,
+            'description' => $request->description
+        ]);
+
+        $product->save();
+
+        return response()->json([
+            'message' => 'Product successfully created',
+            'product' => $product
+        ], 201);
+
     }
 
     /**

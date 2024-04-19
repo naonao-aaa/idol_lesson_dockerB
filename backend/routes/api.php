@@ -29,6 +29,9 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
 // (管理者)全てのプランを取得する
 Route::middleware('auth:sanctum')->get('/admin/products', [ProductController::class, 'getProducts']);
+// (管理者)プランを作成する
+Route::middleware('auth:sanctum')->post('/admin/products', [ProductController::class, 'store']);
+
 
 // ログアウト
 Route::middleware('auth:sanctum')->post('/users/logout', [LoginController::class, 'logout']);
