@@ -41,9 +41,11 @@ const ProductListScreen = () => {
           <h1>受付中のプラン一覧</h1>
         </Col>
         <Col className="text-end">
-          <Button className="btn-sm m-3">
-            <FaPlus /> Create Plan
-          </Button>
+          <LinkContainer to={`/admin/product/create`}>
+            <Button className="btn-sm m-3">
+              <FaPlus /> Create Plan
+            </Button>
+          </LinkContainer>
         </Col>
       </Row>
 

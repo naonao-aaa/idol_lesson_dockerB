@@ -14,7 +14,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::all(); // 全カテゴリを取得
+        return response()->json($categories); // JSON形式でフロントエンドに送信
     }
 
     /**

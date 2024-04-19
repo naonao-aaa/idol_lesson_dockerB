@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -28,6 +29,9 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
 // (管理者)全てのプランを取得する
 Route::middleware('auth:sanctum')->get('/admin/products', [ProductController::class, 'getProducts']);
+// (管理者)プランを作成する
+Route::middleware('auth:sanctum')->post('/admin/products', [ProductController::class, 'store']);
+
 
 // ログアウト
 Route::middleware('auth:sanctum')->post('/users/logout', [LoginController::class, 'logout']);
@@ -52,3 +56,6 @@ Route::middleware('auth:sanctum')->put('/admin/orders/{order}/completion', [Orde
 
 // PayPalのクライアントIDを、フロント側に返す。
 Route::middleware('auth:sanctum')->get('/config/paypal', [OrderController::class, 'getPaypalClientId']);
+
+// カテゴリ一覧取得
+Route::get('/categories', [CategoryController::class, 'index']);
