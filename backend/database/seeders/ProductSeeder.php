@@ -19,7 +19,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => "ダンスレッスン",
                 'user_id' => 1,
-                'image' => "/images/dance_tanpatukeiyaku.png",
+                'image' => "images/products/dance_tanpatukeiyaku.png",
                 'description' => "1時間のダンスレッスンをします！",
                 'contract_type' => "単発契約",
                 'category_id' => 1,
@@ -30,7 +30,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => "ボーカルレッスン",
                 'user_id' => 1,
-                'image' => "/images/vocal_tanpatukeiyaku.png",
+                'image' => "images/products/vocal_tanpatukeiyaku.png",
                 'description' => "1時間のボーカルレッスンをします！",
                 'contract_type' => "単発契約",
                 'category_id' => 2,
@@ -41,7 +41,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => "メイクレッスン",
                 'user_id' => 1,
-                'image' => "/images/make_tanpatukeiyaku.png",
+                'image' => "images/products/make_tanpatukeiyaku.png",
                 'description' => "1時間のメイクレッスンをします！",
                 'contract_type' => "単発契約",
                 'category_id' => 3,
@@ -52,7 +52,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => "食事管理方法伝授",
                 'user_id' => 1,
-                'image' => "/images/shokujikanri_tanpatukeiyaku.png",
+                'image' => "images/products/shokujikanri_tanpatukeiyaku.png",
                 'description' => "1時間で、食事管理についてのコツや疑問にお答えします！",
                 'contract_type' => "単発契約",
                 'category_id' => 4,
@@ -63,7 +63,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => "週一ダンスレッスン",
                 'user_id' => 1,
-                'image' => "/images/dance_tukikeiyaku.png",
+                'image' => "images/products/dance_tukikeiyaku.png",
                 'description' => "週1で、ダンスのレッスンを行います！1回のレッスンは45分です！",
                 'contract_type' => "月契約",
                 'category_id' => 1,
@@ -74,7 +74,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => "週一ボーカルレッスン",
                 'user_id' => 1,
-                'image' => "/images/vocal_tukikeiyaku.png",
+                'image' => "images/products/vocal_tukikeiyaku.png",
                 'description' =>
                   "週1で、ボーカルのレッスンを行います！1回のレッスンは45分です！",
                 'contract_type' => "月契約",
