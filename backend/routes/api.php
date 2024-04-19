@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -52,3 +53,6 @@ Route::middleware('auth:sanctum')->put('/admin/orders/{order}/completion', [Orde
 
 // PayPalのクライアントIDを、フロント側に返す。
 Route::middleware('auth:sanctum')->get('/config/paypal', [OrderController::class, 'getPaypalClientId']);
+
+// カテゴリ一覧取得
+Route::get('/categories', [CategoryController::class, 'index']);
