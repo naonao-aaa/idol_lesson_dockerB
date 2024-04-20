@@ -9,6 +9,7 @@ import {
   Button,
   Card,
 } from "react-bootstrap";
+import { BASE_URL } from "../constants";
 import { FaTrash } from "react-icons/fa";
 import Message from "../components/Message";
 import { addToCart, removeFromCart } from "../slices/cartSlice";
@@ -46,7 +47,12 @@ const CartScreen = () => {
               <ListGroup.Item key={item.id}>
                 <Row>
                   <Col md={2}>
-                    <Image src={item.image} alt={item.name} fluid rounded />
+                    <Image
+                      src={`${BASE_URL}/storage/${item.image}`}
+                      alt={item.name}
+                      fluid
+                      rounded
+                    />
                   </Col>
                   <Col md={3}>
                     <Link to={`/product/${item.id}`}>{item.name}</Link>

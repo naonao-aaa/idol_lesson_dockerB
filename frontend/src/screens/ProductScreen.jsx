@@ -11,6 +11,7 @@ import {
   Card,
   Button,
 } from "react-bootstrap";
+import { BASE_URL } from "../constants";
 import { useGetProductDetailsQuery } from "../slices/productsApiSlice";
 import Rating from "../components/Rating";
 import Loader from "../components/Loader";
@@ -56,7 +57,11 @@ const ProductScreen = () => {
         <>
           <Row>
             <Col md={5}>
-              <Image src={product.image} alt={product.name} fluid />
+              <Image
+                src={`${BASE_URL}/storage/${product.image}`}
+                alt={product.name}
+                fluid
+              />
             </Col>
             <Col md={4}>
               <ListGroup variant="flush">
