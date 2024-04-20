@@ -46,11 +46,16 @@ const ProductEditScreen = () => {
     //   console.log(`${key}: ${value}`);
     // }
 
+    console.log(name);
+
     axios
-      .put(`${BASE_URL}/api/admin/products/${productId}`, formData, {
+      .post(`${BASE_URL}/api/admin/products/${productId}`, formData, {
         // headers: {
         //   "Content-Type": "multipart/form-data",
         // },
+        headers: {
+          "X-HTTP-Method-Override": "PUT",
+        },
         withCredentials: true,
         withXSRFToken: true,
       })
@@ -118,7 +123,7 @@ const ProductEditScreen = () => {
     }
   }, [product]);
 
-  console.log(name);
+  // console.log(name);
 
   return (
     <>
