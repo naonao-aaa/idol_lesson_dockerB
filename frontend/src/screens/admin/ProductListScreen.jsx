@@ -26,8 +26,22 @@ const ProductListScreen = () => {
       });
   };
 
-  const deleteHandler = () => {
-    console.log("delete");
+  const deleteHandler = async (id) => {
+    if (window.confirm("本当に削除しますか？")) {
+      axios
+        .delete(`${BASE_URL}/api/admin/products/${id}`, {
+          withCredentials: true,
+          withXSRFToken: true,
+        })
+        .then((response) => {
+          console.log(response.data);
+          toast.success("Product deleted");
+          fetchProductsData();
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.message || error.message);
+        });
+    }
   };
 
   useEffect(() => {
