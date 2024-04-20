@@ -31,6 +31,8 @@ Route::get('/products/{product}', [ProductController::class, 'show']);
 Route::middleware('auth:sanctum')->get('/admin/products', [ProductController::class, 'getProducts']);
 // (管理者)プランを作成する
 Route::middleware('auth:sanctum')->post('/admin/products', [ProductController::class, 'store']);
+// (管理者)プランの更新
+Route::middleware('auth:sanctum')->put('/admin/products/{product}', [ProductController::class, 'updateProduct']);
 
 
 // ログアウト

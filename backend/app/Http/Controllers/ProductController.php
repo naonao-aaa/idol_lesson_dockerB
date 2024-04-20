@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -130,15 +132,55 @@ class ProductController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * (管理者)プランの更新
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function updateProduct(Request $request, Product $product)
     {
-        //
+        // ログイン中のユーザー情報を取得し、管理者かどうかをチェック
+        if (!Auth::check() || !Auth::user()->isAdmin) {
+            return response()->json(['message' => 'You do not have admin privileges to update products.'], 403);
+        }
+
+        // $validator = Validator::make($request->all(), [
+        //     'name' => 'required|string|max:255',
+        //     'price' => 'required|numeric',
+        //     'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB
+        //     'contract_type' => 'required|string',
+        //     'category_id' => 'required|exists:categories,id',
+        //     'description' => 'required|string'
+        // ]);
+
+        // if ($validator->fails()) {
+        //     return response()->json($validator->errors(), 422);
+        // }
+
+        Log::info($request->all());
+
+        // 送信された画像がある場合のみ画像を更新
+        if ($request->hasFile('image')) {
+            // 古い画像ファイルを削除するロジックをここに追加することをお勧めします
+            Storage::delete('public/' . $product->image);
+            $path = $request->file('image')->store('images/products', 'public');
+            $product->image = $path;
+        }
+
+        // 他のフィールドを更新
+        $product->name = $request->name;
+        $product->price = $request->price;
+        $product->contract_type = $request->contract_type;
+        $product->category_id = $request->category_id;
+        $product->description = $request->description;
+
+        $product->save();
+
+        return response()->json([
+            'message' => 'Product successfully updated',
+            'product' => $product
+        ], 200);
     }
 
     /**
