@@ -7,7 +7,11 @@ const Product = ({ product }) => {
   return (
     <Card className="my-3 p-3 rounded">
       <Link to={`/product/${product.id}`}>
-        <Card.Img src={`${BASE_URL}/storage/${product.image}`} variant="top" />
+        <Card.Img
+          src={`${BASE_URL}/storage/${product.image}`}
+          variant="top"
+          style={{ aspectRatio: "1/1", objectFit: "cover" }}
+        />
       </Link>
 
       <Card.Body>
