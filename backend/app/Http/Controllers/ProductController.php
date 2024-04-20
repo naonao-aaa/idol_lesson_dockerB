@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -145,25 +144,22 @@ class ProductController extends Controller
             return response()->json(['message' => 'You do not have admin privileges to update products.'], 403);
         }
 
-        // $validator = Validator::make($request->all(), [
-        //     'name' => 'required|string|max:255',
-        //     'price' => 'required|numeric',
-        //     'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB
-        //     'contract_type' => 'required|string',
-        //     'category_id' => 'required|exists:categories,id',
-        //     'description' => 'required|string'
-        // ]);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB
+            'contract_type' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required|string'
+        ]);
 
-        // if ($validator->fails()) {
-        //     return response()->json($validator->errors(), 422);
-        // }
-
-        Log::info($request->all());
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
 
         // 送信された画像がある場合のみ画像を更新
         if ($request->hasFile('image')) {
-            // 古い画像ファイルを削除するロジックをここに追加することをお勧めします
-            Storage::delete('public/' . $product->image);
+            Storage::delete('public/' . $product->image);  // 古い画像ファイルを削除する。
             $path = $request->file('image')->store('images/products', 'public');
             $product->image = $path;
         }

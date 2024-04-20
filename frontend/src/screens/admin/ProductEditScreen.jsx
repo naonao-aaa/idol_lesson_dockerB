@@ -50,9 +50,6 @@ const ProductEditScreen = () => {
 
     axios
       .post(`${BASE_URL}/api/admin/products/${productId}`, formData, {
-        // headers: {
-        //   "Content-Type": "multipart/form-data",
-        // },
         headers: {
           "X-HTTP-Method-Override": "PUT",
         },
@@ -105,7 +102,6 @@ const ProductEditScreen = () => {
       .catch((error) => {
         toast.error(error?.response?.data?.message || error.message);
       });
-    // refetch();
   };
 
   useEffect(() => {
