@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+// use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -69,6 +70,35 @@ class UserController extends Controller
     }
 
     /**
+     * (管理者)ユーザーの更新
+     * 
+     */
+    public function updateUser(Request $request, User $user)
+    {
+        // Log::info($request->all());
+
+        // ログイン中のユーザー情報を取得し、管理者かどうかをチェック
+        if (!Auth::check() || !Auth::user()->isAdmin) {
+            return response()->json(['message' => 'You do not have admin privileges.'], 403);
+        }
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'isAdmin' => 'required|boolean'
+        ]);
+
+        // ユーザーデータを更新
+        $user->update($data);
+
+        return response()->json([
+            'message' => 'ユーザープロフィールが更新されました',
+            'user' => $user
+        ]);
+
+    }
+
+    /**
      * (管理者)全てのユーザーを取得する
      */
     public function getUsers()
@@ -88,6 +118,28 @@ class UserController extends Controller
             // 一般ユーザーの場合は管理者権限がない旨のメッセージを返す
             return response()->json([
                 'message' => 'You do not have admin privileges to access all products.'
+            ], 403); 
+        }
+    }
+
+    /**
+     * (管理者)特定のユーザーを取得する
+     */
+    public function getUser(User $user)
+    {
+        // ログイン中のユーザー情報を取得
+        $loginUser = Auth::user();
+
+        // ログイン中のユーザーが管理者かどうかをチェック
+        if ($loginUser->isAdmin) {
+            // 管理者の場合は特定のユーザー情報を返す
+            return response()->json([
+                'user' => $user
+            ]);
+        } else {
+            // 一般ユーザーの場合は管理者権限がない旨のメッセージを返す
+            return response()->json([
+                'message' => 'You do not have admin privileges.'
             ], 403); 
         }
     }
