@@ -27,7 +27,21 @@ const UserListScreen = () => {
   };
 
   const deleteHandler = async (id) => {
-    console.log("delete");
+    if (window.confirm("本当に削除しますか？")) {
+      axios
+        .delete(`${BASE_URL}/api/admin/users/${id}`, {
+          withCredentials: true,
+          withXSRFToken: true,
+        })
+        .then((response) => {
+          console.log(response.data);
+          toast.success("User deleted");
+          fetchUsersData();
+        })
+        .catch((error) => {
+          toast.error(error?.response?.data?.message || error.message);
+        });
+    }
   };
 
   useEffect(() => {

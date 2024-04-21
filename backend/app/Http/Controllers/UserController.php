@@ -91,4 +91,22 @@ class UserController extends Controller
             ], 403); 
         }
     }
+
+    /**
+     * (管理者)ユーザーの削除
+     *
+     */
+    public function destroy(User $user)
+    {
+        // ログイン中のユーザー情報を取得し、管理者かどうかをチェック
+        if (!Auth::check() || !Auth::user()->isAdmin) {
+            return response()->json(['message' => 'You do not have admin privileges.'], 403);
+        }
+
+        $user->delete();
+
+        return response()->json([
+            'message' => 'User successfully deleted',
+        ], 200);
+    }
 }

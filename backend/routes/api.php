@@ -46,6 +46,8 @@ Route::post('/users/register', [UserController::class, 'register']);
 Route::middleware('auth:sanctum')->put('/users/profile', [UserController::class, 'updateUserProfile']);
 // (管理者)全てのユーザーを取得する
 Route::middleware('auth:sanctum')->get('/admin/users', [UserController::class, 'getUsers']);
+// (管理者)ユーザーを削除する
+Route::middleware('auth:sanctum')->delete('/admin/users/{user}', [UserController::class, 'destroy']);
 
 //新しい注文を作成する
 Route::middleware('auth:sanctum')->post('/orders', [OrderController::class, 'store']);
