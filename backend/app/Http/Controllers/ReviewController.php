@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Http\Request;
@@ -42,6 +43,20 @@ class ReviewController extends Controller
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'required|string'
         ]);
+
+        // 購入履歴の確認
+        $hasPurchased = Order::whereHas('products', function ($query) use ($product) {
+            $query->where('products.id', $product->id);
+        })
+        ->where('user_id', Auth::id())
+        ->where('is_paid', true)
+        ->exists();
+
+        if (!$hasPurchased) {
+        return response()->json([
+        'message' => 'レビューは、契約して料金をお支払いした人のみが投稿できます。'
+        ], 403); // Forbidden ステータスコードを返す
+        }
 
         // 同一ユーザーが同一商品に対してレビューを既に投稿しているか確認
         $existingReview = Review::where('user_id', Auth::id())
