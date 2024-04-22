@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
@@ -33,9 +35,40 @@ class ReviewController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Product $product)
     {
-        //
+        // レビューデータのバリデーション
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string'
+        ]);
+
+        // 同一ユーザーが同一商品に対してレビューを既に投稿しているか確認
+        $existingReview = Review::where('user_id', Auth::id())
+                                ->where('product_id', $product->id)
+                                ->first();
+        
+        if ($existingReview) {
+            return response()->json([
+                'message' => 'すでにこの商品に対するレビューを投稿しています。'
+            ], 409); // Conflict ステータスコードを返す
+        }
+
+        // レビューの作成
+        $review = new Review([
+            'user_id' => Auth::id(),
+            'product_id' => $product->id,
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+        ]);
+
+        // データベースに保存
+        $review->save();
+
+        return response()->json([
+            'message' => 'レビューが正常に登録されました。',
+            'review' => $review
+        ], 201);
     }
 
     /**

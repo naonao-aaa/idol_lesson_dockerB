@@ -65,6 +65,8 @@ const ProductScreen = () => {
       .then((response) => {
         refetch();
         toast.success("Review created successfully");
+        setRating(0);
+        setComment("");
       })
       .catch((error) => {
         toast.error(error?.response?.data?.message || error.message);
@@ -169,9 +171,9 @@ const ProductScreen = () => {
               <ListGroup variant="flush">
                 {product.reviews.map((review) => (
                   <ListGroup.Item key={review.id}>
-                    <strong>{review.name}</strong>
+                    <strong>{review.user.name}</strong>
                     <Rating value={review.rating} />
-                    <p>{review.createdAt.substring(0, 10)}</p>
+                    <p>{review.created_at?.substring(0, 10)}</p>
                     <p>{review.comment}</p>
                   </ListGroup.Item>
                 ))}
