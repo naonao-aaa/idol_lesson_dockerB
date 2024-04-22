@@ -1,7 +1,8 @@
+import axios from "axios";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Form,
   Row,
@@ -17,6 +18,7 @@ import Rating from "../components/Rating";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { addToCart } from "../slices/cartSlice";
+import { toast } from "react-toastify";
 
 const ProductScreen = () => {
   const { id: productId } = useParams();
@@ -25,6 +27,8 @@ const ProductScreen = () => {
   const navigate = useNavigate();
 
   const [qty, setQty] = useState(1);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
 
   const addToCartHandler = () => {
     if (product.contract_type === "単発契約") {
@@ -38,8 +42,34 @@ const ProductScreen = () => {
   const {
     data: product,
     isLoading,
+    refetch,
     error,
   } = useGetProductDetailsQuery(productId);
+
+  console.log(product);
+
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+
+    axios
+      .post(
+        `${BASE_URL}/api/products/${productId}/reviews`,
+        { rating, comment },
+        {
+          withCredentials: true,
+          withXSRFToken: true,
+        }
+      )
+      .then((response) => {
+        refetch();
+        toast.success("Review created successfully");
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.message || error.message);
+      });
+  };
 
   return (
     <>
@@ -129,6 +159,64 @@ const ProductScreen = () => {
                   </ListGroup.Item>
                 </ListGroup>
               </Card>
+            </Col>
+          </Row>
+
+          <Row className="review">
+            <Col md={10}>
+              <h2>レビュー</h2>
+              {product.reviews.length === 0 && <Message>No Reviews</Message>}
+              <ListGroup variant="flush">
+                {product.reviews.map((review) => (
+                  <ListGroup.Item key={review.id}>
+                    <strong>{review.name}</strong>
+                    <Rating value={review.rating} />
+                    <p>{review.createdAt.substring(0, 10)}</p>
+                    <p>{review.comment}</p>
+                  </ListGroup.Item>
+                ))}
+                <ListGroup.Item>
+                  <h2>カスタマーレビューを書く</h2>
+
+                  {userInfo ? (
+                    <Form onSubmit={submitHandler}>
+                      <Form.Group className="my-2" controlId="rating">
+                        <Form.Label>Rating</Form.Label>
+                        <Form.Control
+                          as="select"
+                          required
+                          value={rating}
+                          onChange={(e) => setRating(e.target.value)}
+                        >
+                          <option value="">選択してください</option>
+                          <option value="1">1 - 悪い</option>
+                          <option value="2">2 - まあまあ</option>
+                          <option value="3">3 - 良い</option>
+                          <option value="4">4 - とても良い</option>
+                          <option value="5">5 - 非常に優れている</option>
+                        </Form.Control>
+                      </Form.Group>
+                      <Form.Group className="my-2" controlId="comment">
+                        <Form.Label>Comment</Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          row="4"
+                          required
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                        ></Form.Control>
+                      </Form.Group>
+                      <Button type="submit" variant="primary">
+                        Submit
+                      </Button>
+                    </Form>
+                  ) : (
+                    <Message>
+                      Please <Link to="/login">sign in</Link> to write a review
+                    </Message>
+                  )}
+                </ListGroup.Item>
+              </ListGroup>
             </Col>
           </Row>
         </>
