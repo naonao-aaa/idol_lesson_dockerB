@@ -4,6 +4,18 @@ import Rating from "./Rating";
 import { BASE_URL } from "../constants";
 
 const Product = ({ product }) => {
+  // レビューの平均評価を計算する関数
+  const calculateAverageRating = (reviews) => {
+    if (reviews.length === 0) return 0; // レビューがない場合は0を返す
+    const total = reviews.reduce((acc, review) => acc + review.rating, 0);
+    return total / reviews.length;
+  };
+
+  // 平均評価を計算
+  const averageRating = product?.reviews
+    ? calculateAverageRating(product.reviews)
+    : 0;
+
   return (
     <Card className="my-3 p-3 rounded">
       <Link to={`/product/${product.id}`}>
@@ -23,8 +35,8 @@ const Product = ({ product }) => {
 
         <Card.Text as="div">
           <Rating
-            value={product.rating}
-            text={`${product.num_reviews} reviews`}
+            value={averageRating}
+            text={`${product.reviews.length} reviews`}
           />
         </Card.Text>
 
