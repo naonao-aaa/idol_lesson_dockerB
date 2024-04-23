@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -71,3 +72,6 @@ Route::middleware('auth:sanctum')->get('/config/paypal', [OrderController::class
 
 // カテゴリ一覧取得
 Route::get('/categories', [CategoryController::class, 'index']);
+
+// レビューを作成する
+Route::middleware('auth:sanctum')->post('/products/{product}/reviews', [ReviewController::class, 'store']);

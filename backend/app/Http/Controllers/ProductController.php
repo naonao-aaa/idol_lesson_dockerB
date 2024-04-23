@@ -113,6 +113,7 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         if ($product) {
+            $product->load('reviews.user');
             return response()->json($product);
         } else {
             return response()->json(['message' => 'Product not found'], 404);
