@@ -19,6 +19,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { addToCart } from "../slices/cartSlice";
 import { toast } from "react-toastify";
+import { calculateAverageRating } from "../utils/ratingUtils";
 
 const ProductScreen = () => {
   const { id: productId } = useParams();
@@ -48,14 +49,7 @@ const ProductScreen = () => {
 
   console.log(product);
 
-  // // レビューの平均評価を計算する関数
-  const calculateAverageRating = (reviews) => {
-    if (reviews.length === 0) return 0; // レビューがない場合は0を返す
-    const total = reviews.reduce((acc, review) => acc + review.rating, 0);
-    return total / reviews.length;
-  };
-
-  // // 平均評価を計算
+  // 平均評価を計算
   const averageRating = product?.reviews
     ? calculateAverageRating(product.reviews)
     : 0;

@@ -2,15 +2,9 @@ import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Rating from "./Rating";
 import { BASE_URL } from "../constants";
+import { calculateAverageRating } from "../utils/ratingUtils";
 
 const Product = ({ product }) => {
-  // レビューの平均評価を計算する関数
-  const calculateAverageRating = (reviews) => {
-    if (reviews.length === 0) return 0; // レビューがない場合は0を返す
-    const total = reviews.reduce((acc, review) => acc + review.rating, 0);
-    return total / reviews.length;
-  };
-
   // 平均評価を計算
   const averageRating = product?.reviews
     ? calculateAverageRating(product.reviews)
