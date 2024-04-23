@@ -19,6 +19,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { addToCart } from "../slices/cartSlice";
 import { toast } from "react-toastify";
+import { calculateAverageRating } from "../utils/ratingUtils";
 
 const ProductScreen = () => {
   const { id: productId } = useParams();
@@ -47,6 +48,11 @@ const ProductScreen = () => {
   } = useGetProductDetailsQuery(productId);
 
   console.log(product);
+
+  // 平均評価を計算
+  const averageRating = product?.reviews
+    ? calculateAverageRating(product.reviews)
+    : 0;
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -102,8 +108,8 @@ const ProductScreen = () => {
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Rating
-                    value={product.rating}
-                    text={`${product.num_reviews} reviews`}
+                    value={averageRating}
+                    text={`${product.reviews.length} reviews`}
                   />
                 </ListGroup.Item>
                 <ListGroup.Item>価格: {product.price}円</ListGroup.Item>
