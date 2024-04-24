@@ -3,9 +3,13 @@ import Product from "../components/Product";
 import { useGetProductsQuery } from "../slices/productsApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import { useQueryProducts } from "../hooks/useQueryProducts";
 
 const HomeScreen = () => {
-  const { data: products, isLoading, error } = useGetProductsQuery();
+  // const { data: products, isLoading, error } = useGetProductsQuery();
+  // console.log(products);
+
+  const { status, data: products, isLoading, error } = useQueryProducts();
   console.log(products);
 
   return (
