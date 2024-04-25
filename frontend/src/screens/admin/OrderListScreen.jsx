@@ -7,32 +7,15 @@ import { Table, Button } from "react-bootstrap";
 import { FaTimes } from "react-icons/fa";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
+import { useQueryAdminOrders } from "../../hooks/admin/useQueryAdminOrders";
 
 const OrderListScreen = () => {
-  const [orders, setOrders] = useState(null);
-
-  const fetchOrdersData = () => {
-    axios
-      .get(`${BASE_URL}/api/admin/orders`, {
-        withCredentials: true,
-        withXSRFToken: true,
-      })
-      .then((response) => {
-        console.log(response.data);
-        setOrders(response.data.orders);
-      })
-      .catch((error) => {
-        toast.error(error?.response?.data?.message || error.message);
-      });
-  };
-
-  useEffect(() => {
-    fetchOrdersData();
-  }, []);
+  const { status, data: orders, isLoading, error } = useQueryAdminOrders();
 
   return (
     <>
       <h1>ご契約履歴</h1>
+      {error && <Message variant="danger">{error.message}</Message>}
       {!orders ? (
         <Loader />
       ) : (
