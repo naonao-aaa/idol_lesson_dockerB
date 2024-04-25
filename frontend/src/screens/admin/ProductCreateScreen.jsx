@@ -6,7 +6,7 @@ import { Form, Button } from "react-bootstrap";
 import FormContainer from "../../components/FormContainer";
 import { toast } from "react-toastify";
 import { useQueryCategories } from "../../hooks/useQueryCategories";
-// import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ProductCreateScreen = () => {
   const [name, setName] = useState("");
@@ -16,7 +16,7 @@ const ProductCreateScreen = () => {
   const [category_id, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
 
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   const { status, data: allCategory, isLoading, error } = useQueryCategories();
 
@@ -44,7 +44,7 @@ const ProductCreateScreen = () => {
       .then((response) => {
         console.log(response.data);
         toast.success("product created successfully");
-        // queryClient.invalidateQueries(["allProductsAdmin"]);
+        queryClient.invalidateQueries(["allProductsAdmin"]);
         navigate("/admin/productlist");
       })
       .catch((error) => {

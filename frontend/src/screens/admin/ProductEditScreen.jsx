@@ -10,7 +10,7 @@ import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import { useQueryCategories } from "../../hooks/useQueryCategories";
 import { useQueryProductDetail } from "../../hooks/useQueryProductDetail";
-// import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ProductEditScreen = () => {
   const { id: productId } = useParams();
@@ -22,7 +22,7 @@ const ProductEditScreen = () => {
   const [category_id, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
 
-  // const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   const {
     data: product,
@@ -63,7 +63,7 @@ const ProductEditScreen = () => {
       .then((response) => {
         console.log(response.data);
         toast.success("product updated successfully");
-        // queryClient.invalidateQueries(["allProductsAdmin"]);
+        queryClient.invalidateQueries(["allProductsAdmin"]);
         navigate("/admin/productlist");
       })
       .catch((error) => {
