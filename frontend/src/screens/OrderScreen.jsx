@@ -14,8 +14,6 @@ import { useQueryPaypalClientId } from "../hooks/useQueryPaypalClientId";
 const OrderScreen = () => {
   const { id: orderId } = useParams();
 
-  const [paypalClientId, setPaypalClientId] = useState("");
-
   const { userInfo } = useSelector((state) => state.auth);
 
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
@@ -27,21 +25,7 @@ const OrderScreen = () => {
     refetch,
   } = useQueryOrderDetail(orderId);
 
-  // const { status, data: paypalClientId } = useQueryPaypalClientId();
-  const fetchPaypalClientId = async () => {
-    axios
-      .get(`${BASE_URL}/api/config/paypal`, {
-        withCredentials: true,
-        withXSRFToken: true,
-      })
-      .then((response) => {
-        console.log(response.data);
-        setPaypalClientId(response.data.paypalClientId);
-      })
-      .catch((error) => {
-        toast.error(error?.response?.data?.message || error.message);
-      });
-  };
+  const { status, data: paypalClientId } = useQueryPaypalClientId();
 
   const loadPaypalScript = async () => {
     paypalDispatch({
@@ -53,10 +37,6 @@ const OrderScreen = () => {
     });
     paypalDispatch({ type: "setLoadingStatus", value: "pending" });
   };
-
-  useEffect(() => {
-    fetchPaypalClientId();
-  }, [orderId]);
 
   useEffect(() => {
     if (paypalClientId && order && !order.isPaid && !window.paypal) {
