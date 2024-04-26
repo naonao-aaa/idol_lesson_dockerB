@@ -65,7 +65,7 @@ Route::middleware('auth:sanctum')->get('/my/orders', [OrderController::class, 'g
 // (管理者)全ての注文を取得する
 Route::middleware(['auth:sanctum', 'admin'])->get('/admin/orders', [OrderController::class, 'getOrders']);
 // (管理者) 注文プランを遂行済みに更新する
-Route::middleware('auth:sanctum')->put('/admin/orders/{order}/completion', [OrderController::class, 'updateOrderToCompletion']);
+Route::middleware(['auth:sanctum', 'admin'])->put('/admin/orders/{order}/completion', [OrderController::class, 'updateOrderToCompletion']);
 
 // PayPalのクライアントIDを、フロント側に返す。
 Route::middleware('auth:sanctum')->get('/config/paypal', [OrderController::class, 'getPaypalClientId']);
