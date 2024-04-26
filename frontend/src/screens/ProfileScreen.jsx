@@ -9,9 +9,9 @@ import { FaTimes } from "react-icons/fa";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { setCredentials } from "../slices/authSlice";
+import { useQueryMyOrders } from "../hooks/useQueryMyOrders";
 
 const ProfileScreen = () => {
-  const [orders, setOrders] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,24 +19,8 @@ const ProfileScreen = () => {
 
   const { userInfo } = useSelector((state) => state.auth);
 
-  const fetchMyOrder = () => {
-    axios
-      .get(`${BASE_URL}/api/my/orders`, {
-        withCredentials: true,
-        withXSRFToken: true,
-      })
-      .then((response) => {
-        console.log(response.data);
-        setOrders(response.data.orders);
-      })
-      .catch((error) => {
-        toast.error(error?.response?.data?.message || error.message);
-      });
-  };
-
-  useEffect(() => {
-    fetchMyOrder();
-  }, []);
+  const { status, data: orders, isLoading, error } = useQueryMyOrders();
+  console.log(orders);
 
   useEffect(() => {
     setName(userInfo.name);
@@ -130,6 +114,7 @@ const ProfileScreen = () => {
 
       <Col md={9}>
         <h2>ご契約履歴</h2>
+        {error && <Message variant="danger">{error.message}</Message>}
         {!orders ? (
           <Loader />
         ) : (

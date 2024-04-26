@@ -8,11 +8,13 @@ import { toast } from "react-toastify";
 import { useGetProductDetailsQuery } from "../../slices/productsApiSlice";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
+import { useQueryCategories } from "../../hooks/useQueryCategories";
+import { useQueryProductDetail } from "../../hooks/useQueryProductDetail";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ProductEditScreen = () => {
   const { id: productId } = useParams();
 
-  const [allCategory, setAllCategory] = useState([]);
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState("");
@@ -20,12 +22,14 @@ const ProductEditScreen = () => {
   const [category_id, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
 
+  const queryClient = useQueryClient();
+
   const {
     data: product,
     isLoading,
-    refetch,
     error,
-  } = useGetProductDetailsQuery(productId);
+    refetch,
+  } = useQueryProductDetail(productId);
 
   const navigate = useNavigate();
 
@@ -59,6 +63,7 @@ const ProductEditScreen = () => {
       .then((response) => {
         console.log(response.data);
         toast.success("product updated successfully");
+        queryClient.invalidateQueries(["allProductsAdmin"]);
         navigate("/admin/productlist");
       })
       .catch((error) => {
@@ -92,21 +97,7 @@ const ProductEditScreen = () => {
     }
   };
 
-  const fetchAllCategory = async () => {
-    axios
-      .get(`${BASE_URL}/api/categories`)
-      .then((response) => {
-        setAllCategory(response.data);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        toast.error(error?.response?.data?.message || error.message);
-      });
-  };
-
-  useEffect(() => {
-    fetchAllCategory();
-  }, []);
+  const { status, data: allCategory } = useQueryCategories();
 
   useEffect(() => {
     if (product) {
@@ -192,7 +183,7 @@ const ProductEditScreen = () => {
                 onChange={(e) => setCategoryId(e.target.value)}
               >
                 <option value="">カテゴリを選択してください</option>
-                {allCategory.map((oneOfAllCategory) => (
+                {allCategory?.map((oneOfAllCategory) => (
                   <option key={oneOfAllCategory.id} value={oneOfAllCategory.id}>
                     {oneOfAllCategory.name}
                   </option>

@@ -7,24 +7,16 @@ import { Table, Button } from "react-bootstrap";
 import { FaTrash, FaEdit, FaCheck, FaTimes } from "react-icons/fa";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
+import { useQueryAdminUsers } from "../../hooks/admin/useQueryAdminUsers";
 
 const UserListScreen = () => {
-  const [users, setUsers] = useState(null);
-
-  const fetchUsersData = () => {
-    axios
-      .get(`${BASE_URL}/api/admin/users`, {
-        withCredentials: true,
-        withXSRFToken: true,
-      })
-      .then((response) => {
-        console.log(response.data);
-        setUsers(response.data.users);
-      })
-      .catch((error) => {
-        toast.error(error?.response?.data?.message || error.message);
-      });
-  };
+  const {
+    status,
+    data: users,
+    isLoading,
+    error,
+    refetch,
+  } = useQueryAdminUsers();
 
   const deleteHandler = async (id) => {
     if (window.confirm("本当に削除しますか？")) {
@@ -36,17 +28,13 @@ const UserListScreen = () => {
         .then((response) => {
           console.log(response.data);
           toast.success("User deleted");
-          fetchUsersData();
+          refetch();
         })
         .catch((error) => {
           toast.error(error?.response?.data?.message || error.message);
         });
     }
   };
-
-  useEffect(() => {
-    fetchUsersData();
-  }, []);
 
   return (
     <>

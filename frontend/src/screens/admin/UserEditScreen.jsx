@@ -8,10 +8,10 @@ import Loader from "../../components/Loader";
 import FormContainer from "../../components/FormContainer";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
+import { useQueryAdminUserDetail } from "../../hooks/admin/useQueryAdminUserDetail";
+import { useQueryClient } from "@tanstack/react-query";
 
 const UserEditScreen = () => {
-  const [user, setUser] = useState(null);
-
   const { id: userId } = useParams();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -19,19 +19,14 @@ const UserEditScreen = () => {
 
   const navigate = useNavigate();
 
-  const fetchUserDetail = async () => {
-    axios
-      .get(`${BASE_URL}/api/admin/users/${userId}`, {
-        withCredentials: true,
-        withXSRFToken: true,
-      })
-      .then((response) => {
-        setUser(response.data.user);
-      })
-      .catch((error) => {
-        toast.error(error?.response?.data?.message || error.message);
-      });
-  };
+  const {
+    data: user,
+    isLoading,
+    error,
+    refetch,
+  } = useQueryAdminUserDetail(userId);
+
+  const queryClient = useQueryClient();
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -48,16 +43,13 @@ const UserEditScreen = () => {
       )
       .then((response) => {
         toast.success("user updated successfully");
+        queryClient.invalidateQueries(["allUsersAdmin"]);
         navigate("/admin/userlist");
       })
       .catch((error) => {
         toast.error(error?.response?.data?.message || error.message);
       });
   };
-
-  useEffect(() => {
-    fetchUserDetail();
-  }, []);
 
   useEffect(() => {
     if (user) {

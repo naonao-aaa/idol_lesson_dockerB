@@ -13,7 +13,7 @@ import {
   Button,
 } from "react-bootstrap";
 import { BASE_URL } from "../constants";
-import { useGetProductDetailsQuery } from "../slices/productsApiSlice";
+import { useQueryProductDetail } from "../hooks/useQueryProductDetail";
 import Rating from "../components/Rating";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -43,9 +43,9 @@ const ProductScreen = () => {
   const {
     data: product,
     isLoading,
-    refetch,
     error,
-  } = useGetProductDetailsQuery(productId);
+    refetch,
+  } = useQueryProductDetail(productId);
 
   console.log(product);
 

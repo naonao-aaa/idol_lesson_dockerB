@@ -5,15 +5,20 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import FormContainer from "../../components/FormContainer";
 import { toast } from "react-toastify";
+import { useQueryCategories } from "../../hooks/useQueryCategories";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ProductCreateScreen = () => {
-  const [allCategory, setAllCategory] = useState([]);
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState("");
   const [contract_type, setContractType] = useState("単発契約");
   const [category_id, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
+
+  const queryClient = useQueryClient();
+
+  const { status, data: allCategory, isLoading, error } = useQueryCategories();
 
   const navigate = useNavigate();
 
@@ -39,6 +44,7 @@ const ProductCreateScreen = () => {
       .then((response) => {
         console.log(response.data);
         toast.success("product created successfully");
+        queryClient.invalidateQueries(["allProductsAdmin"]);
         navigate("/admin/productlist");
       })
       .catch((error) => {
@@ -71,23 +77,6 @@ const ProductCreateScreen = () => {
       setImage(file);
     }
   };
-
-  const fetchAllCategory = async () => {
-    axios
-      .get(`${BASE_URL}/api/categories`)
-      .then((response) => {
-        setAllCategory(response.data);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        toast.error(error?.response?.data?.message || error.message);
-      });
-    // refetch();
-  };
-
-  useEffect(() => {
-    fetchAllCategory();
-  }, []);
 
   return (
     <>
@@ -155,7 +144,7 @@ const ProductCreateScreen = () => {
               onChange={(e) => setCategoryId(e.target.value)}
             >
               <option value="">カテゴリを選択してください</option>
-              {allCategory.map((oneOfAllCategory) => (
+              {allCategory?.map((oneOfAllCategory) => (
                 <option key={oneOfAllCategory.id} value={oneOfAllCategory.id}>
                   {oneOfAllCategory.name}
                 </option>

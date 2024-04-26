@@ -8,47 +8,24 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useQueryOrderDetail } from "../hooks/useQueryOrderDetail";
+import { useQueryPaypalClientId } from "../hooks/useQueryPaypalClientId";
 
 const OrderScreen = () => {
   const { id: orderId } = useParams();
-
-  const [order, setOrder] = useState(null);
-  const [error, setError] = useState("");
-  const [paypalClientId, setPaypalClientId] = useState("");
 
   const { userInfo } = useSelector((state) => state.auth);
 
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
 
-  const fetchOrderData = () => {
-    axios
-      .get(`${BASE_URL}/api/orders/${orderId}`, {
-        withCredentials: true,
-        withXSRFToken: true,
-      })
-      .then((response) => {
-        console.log(response.data);
-        setOrder(response.data.order);
-      })
-      .catch((error) => {
-        setError(error?.response?.data?.message);
-      });
-  };
+  const {
+    data: order,
+    isLoading,
+    error,
+    refetch,
+  } = useQueryOrderDetail(orderId);
 
-  const fetchPaypalClientId = async () => {
-    axios
-      .get(`${BASE_URL}/api/config/paypal`, {
-        withCredentials: true,
-        withXSRFToken: true,
-      })
-      .then((response) => {
-        console.log(response.data);
-        setPaypalClientId(response.data.paypalClientId);
-      })
-      .catch((error) => {
-        toast.error(error?.response?.data?.message || error.message);
-      });
-  };
+  const { status, data: paypalClientId } = useQueryPaypalClientId();
 
   const loadPaypalScript = async () => {
     paypalDispatch({
@@ -60,11 +37,6 @@ const OrderScreen = () => {
     });
     paypalDispatch({ type: "setLoadingStatus", value: "pending" });
   };
-
-  useEffect(() => {
-    fetchOrderData();
-    fetchPaypalClientId();
-  }, [orderId]);
 
   useEffect(() => {
     if (paypalClientId && order && !order.isPaid && !window.paypal) {
@@ -94,7 +66,7 @@ const OrderScreen = () => {
             toast.error(error?.response?.data?.message || error.message);
           });
 
-        fetchOrderData();
+        refetch();
 
         toast.success("Order is paid");
       } catch (err) {
@@ -135,7 +107,7 @@ const OrderScreen = () => {
       )
       .then((response) => {
         console.log(response.data);
-        fetchOrderData();
+        refetch();
         toast.success(response.data.message);
       })
       .catch((error) => {
@@ -143,7 +115,15 @@ const OrderScreen = () => {
       });
   };
 
-  return order ? (
+  return isLoading ? (
+    <Loader />
+  ) : error ? (
+    <Message variant="danger">
+      {error.response?.data?.message ||
+        error.message ||
+        "An unknown error occurred"}
+    </Message>
+  ) : (
     <>
       <h1>お申し込みID: {order.id}</h1>
       <Row>
@@ -279,10 +259,6 @@ const OrderScreen = () => {
         </Col>
       </Row>
     </>
-  ) : error ? (
-    <Message variant="danger">{error}</Message>
-  ) : (
-    <Loader />
   );
 };
 

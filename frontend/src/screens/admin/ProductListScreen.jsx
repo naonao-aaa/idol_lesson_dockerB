@@ -7,24 +7,16 @@ import { Table, Button, Row, Col } from "react-bootstrap";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
+import { useQueryAdminProducts } from "../../hooks/admin/useQueryAdminProducts";
 
 const ProductListScreen = () => {
-  const [products, setProducts] = useState(null);
-
-  const fetchProductsData = () => {
-    axios
-      .get(`${BASE_URL}/api/admin/products`, {
-        withCredentials: true,
-        withXSRFToken: true,
-      })
-      .then((response) => {
-        console.log(response.data);
-        setProducts(response.data.products);
-      })
-      .catch((error) => {
-        toast.error(error?.response?.data?.message || error.message);
-      });
-  };
+  const {
+    status,
+    data: products,
+    isLoading,
+    error,
+    refetch,
+  } = useQueryAdminProducts();
 
   const deleteHandler = async (id) => {
     if (window.confirm("本当に削除しますか？")) {
@@ -36,17 +28,13 @@ const ProductListScreen = () => {
         .then((response) => {
           console.log(response.data);
           toast.success("Product deleted");
-          fetchProductsData();
+          refetch();
         })
         .catch((error) => {
           toast.error(error?.response?.data?.message || error.message);
         });
     }
   };
-
-  useEffect(() => {
-    fetchProductsData();
-  }, []);
 
   return (
     <>

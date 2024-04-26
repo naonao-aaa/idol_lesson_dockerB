@@ -8,6 +8,7 @@ import { setCredentials } from "../slices/authSlice";
 import Loader from "../components/Loader";
 import FormContainer from "../components/FormContainer";
 import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
 
 const RegisterScreen = () => {
   const [name, setName] = useState("");
@@ -17,6 +18,8 @@ const RegisterScreen = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const queryClient = useQueryClient();
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -50,6 +53,8 @@ const RegisterScreen = () => {
           });
         })
         .then((response) => {
+          queryClient.invalidateQueries(["allUsersAdmin"]);
+
           return axios
             .post(`${BASE_URL}/login`, loginParams, {
               withCredentials: true,
