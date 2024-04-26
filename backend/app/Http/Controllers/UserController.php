@@ -115,21 +115,9 @@ class UserController extends Controller
      */
     public function getUser(User $user)
     {
-        // ログイン中のユーザー情報を取得
-        $loginUser = Auth::user();
-
-        // ログイン中のユーザーが管理者かどうかをチェック
-        if ($loginUser->isAdmin) {
-            // 管理者の場合は特定のユーザー情報を返す
-            return response()->json([
-                'user' => $user
-            ]);
-        } else {
-            // 一般ユーザーの場合は管理者権限がない旨のメッセージを返す
-            return response()->json([
-                'message' => 'You do not have admin privileges.'
-            ], 403); 
-        }
+        return response()->json([
+            'user' => $user
+        ]);
     }
 
     /**
