@@ -52,11 +52,6 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // ログイン中のユーザー情報を取得し、管理者かどうかをチェック
-        if (!Auth::check() || !Auth::user()->isAdmin) {
-            return response()->json(['message' => 'You do not have admin privileges to create products.'], 403);
-        }
-
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
