@@ -35,7 +35,7 @@ Route::middleware(['auth:sanctum', 'admin'])->post('/admin/products', [ProductCo
 // (管理者)プランの更新
 Route::middleware(['auth:sanctum', 'admin'])->put('/admin/products/{product}', [ProductController::class, 'updateProduct']);
 // (管理者)プランの削除
-Route::middleware('auth:sanctum')->delete('/admin/products/{product}', [ProductController::class, 'destroy']);
+Route::middleware(['auth:sanctum', 'admin'])->delete('/admin/products/{product}', [ProductController::class, 'destroy']);
 
 
 // ログアウト

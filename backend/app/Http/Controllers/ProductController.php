@@ -166,11 +166,6 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        // ログイン中のユーザー情報を取得し、管理者かどうかをチェック
-        if (!Auth::check() || !Auth::user()->isAdmin) {
-            return response()->json(['message' => 'You do not have admin privileges to update products.'], 403);
-        }
-
         $product->delete();
 
         return response()->json([
