@@ -33,7 +33,7 @@ Route::middleware(['auth:sanctum', 'admin'])->get('/admin/products', [ProductCon
 // (管理者)プランを作成する
 Route::middleware(['auth:sanctum', 'admin'])->post('/admin/products', [ProductController::class, 'store']);
 // (管理者)プランの更新
-Route::middleware('auth:sanctum')->put('/admin/products/{product}', [ProductController::class, 'updateProduct']);
+Route::middleware(['auth:sanctum', 'admin'])->put('/admin/products/{product}', [ProductController::class, 'updateProduct']);
 // (管理者)プランの削除
 Route::middleware('auth:sanctum')->delete('/admin/products/{product}', [ProductController::class, 'destroy']);
 
