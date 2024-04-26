@@ -17,6 +17,7 @@ const ProductListScreen = () => {
     error,
     refetch,
   } = useQueryAdminProducts();
+  console.log(error);
 
   const deleteHandler = async (id) => {
     if (window.confirm("本当に削除しますか？")) {
@@ -38,6 +39,9 @@ const ProductListScreen = () => {
 
   return (
     <>
+      {error && (
+        <Message variant="danger">{error.response.data.message}</Message>
+      )}
       <Row className="align-items-center">
         <Col>
           <h1>受付中のプラン一覧</h1>
