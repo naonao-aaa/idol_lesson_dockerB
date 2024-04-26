@@ -46,7 +46,7 @@ Route::post('/users/register', [UserController::class, 'register']);
 // ユーザープロフィールの更新
 Route::middleware('auth:sanctum')->put('/users/profile', [UserController::class, 'updateUserProfile']);
 // (管理者)全てのユーザーを取得する
-Route::middleware('auth:sanctum')->get('/admin/users', [UserController::class, 'getUsers']);
+Route::middleware(['auth:sanctum', 'admin'])->get('/admin/users', [UserController::class, 'getUsers']);
 // (管理者)特定のユーザーを取得する
 Route::middleware('auth:sanctum')->get('/admin/users/{user}', [UserController::class, 'getUser']);
 // (管理者)ユーザーを削除する

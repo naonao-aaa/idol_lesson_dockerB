@@ -103,23 +103,11 @@ class UserController extends Controller
      */
     public function getUsers()
     {
-        // ログイン中のユーザー情報を取得
-        $user = Auth::user();
+        $users = User::get();
 
-        // ログイン中のユーザーが管理者かどうかをチェック
-        if ($user->isAdmin) {
-            // 管理者の場合は全てのユーザー情報をする
-            $users = User::get();
-
-            return response()->json([
-                'users' => $users
-            ]);
-        } else {
-            // 一般ユーザーの場合は管理者権限がない旨のメッセージを返す
-            return response()->json([
-                'message' => 'You do not have admin privileges to access all products.'
-            ], 403); 
-        }
+        return response()->json([
+            'users' => $users
+        ]);
     }
 
     /**
