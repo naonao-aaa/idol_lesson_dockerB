@@ -50,7 +50,7 @@ Route::middleware(['auth:sanctum', 'admin'])->get('/admin/users', [UserControlle
 // (管理者)特定のユーザーを取得する
 Route::middleware(['auth:sanctum', 'admin'])->get('/admin/users/{user}', [UserController::class, 'getUser']);
 // (管理者)ユーザーを削除する
-Route::middleware('auth:sanctum')->delete('/admin/users/{user}', [UserController::class, 'destroy']);
+Route::middleware(['auth:sanctum', 'admin'])->delete('/admin/users/{user}', [UserController::class, 'destroy']);
 // (管理者)ユーザーの更新
 Route::middleware('auth:sanctum')->put('/admin/users/{user}', [UserController::class, 'updateUser']);
 
