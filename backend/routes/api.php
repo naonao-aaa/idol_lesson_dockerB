@@ -63,7 +63,7 @@ Route::middleware('auth:sanctum')->put('/orders/{order}/pay', [OrderController::
 // 自分(ログインユーザー)の注文を取得する。（「/orders/mine」や「/orders/my」のようなエンドポイントにすると、「No query results for model [App\Models\Order] 」というエラーが出た。一先ず「/my/orders」とすることで成功した。）
 Route::middleware('auth:sanctum')->get('/my/orders', [OrderController::class, 'getMyOrders']);
 // (管理者)全ての注文を取得する
-Route::middleware('auth:sanctum')->get('/admin/orders', [OrderController::class, 'getOrders']);
+Route::middleware(['auth:sanctum', 'admin'])->get('/admin/orders', [OrderController::class, 'getOrders']);
 // (管理者) 注文プランを遂行済みに更新する
 Route::middleware('auth:sanctum')->put('/admin/orders/{order}/completion', [OrderController::class, 'updateOrderToCompletion']);
 
