@@ -77,11 +77,6 @@ class UserController extends Controller
     {
         // Log::info($request->all());
 
-        // ログイン中のユーザー情報を取得し、管理者かどうかをチェック
-        if (!Auth::check() || !Auth::user()->isAdmin) {
-            return response()->json(['message' => 'You do not have admin privileges.'], 403);
-        }
-
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
