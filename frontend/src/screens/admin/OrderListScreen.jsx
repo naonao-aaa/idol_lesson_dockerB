@@ -15,7 +15,9 @@ const OrderListScreen = () => {
   return (
     <>
       <h1>ご契約履歴</h1>
-      {error && <Message variant="danger">{error.message}</Message>}
+      {error && (
+        <Message variant="danger">{error.response.data.message}</Message>
+      )}
       {!orders ? (
         <Loader />
       ) : (

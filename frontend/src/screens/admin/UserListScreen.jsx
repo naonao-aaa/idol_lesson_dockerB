@@ -38,6 +38,10 @@ const UserListScreen = () => {
 
   return (
     <>
+      {error && (
+        <Message variant="danger">{error.response.data.message}</Message>
+      )}
+
       <h1>Users</h1>
 
       {!users ? (

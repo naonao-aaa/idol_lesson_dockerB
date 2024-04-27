@@ -27,23 +27,11 @@ class ProductController extends Controller
      */
     public function getProducts()
     {
-        // ログイン中のユーザー情報を取得
-        $user = Auth::user();
+        $products = Product::with('category')->get();
 
-        // ログイン中のユーザーが管理者かどうかをチェック
-        if ($user->isAdmin) {
-            // 管理者の場合は全てのプラン情報をする
-            $products = Product::with('category')->get();
-
-            return response()->json([
-                'products' => $products
-            ]);
-        } else {
-            // 一般ユーザーの場合は管理者権限がない旨のメッセージを返す
-            return response()->json([
-                'message' => 'You do not have admin privileges to access all products.'
-            ], 403); 
-        }
+        return response()->json([
+            'products' => $products
+        ]);
     }
 
     /**
@@ -64,11 +52,6 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // ログイン中のユーザー情報を取得し、管理者かどうかをチェック
-        if (!Auth::check() || !Auth::user()->isAdmin) {
-            return response()->json(['message' => 'You do not have admin privileges to create products.'], 403);
-        }
-
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
@@ -140,11 +123,6 @@ class ProductController extends Controller
      */
     public function updateProduct(Request $request, Product $product)
     {
-        // ログイン中のユーザー情報を取得し、管理者かどうかをチェック
-        if (!Auth::check() || !Auth::user()->isAdmin) {
-            return response()->json(['message' => 'You do not have admin privileges to update products.'], 403);
-        }
-
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'price' => 'required|numeric',
@@ -188,11 +166,6 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        // ログイン中のユーザー情報を取得し、管理者かどうかをチェック
-        if (!Auth::check() || !Auth::user()->isAdmin) {
-            return response()->json(['message' => 'You do not have admin privileges to update products.'], 403);
-        }
-
         $product->delete();
 
         return response()->json([

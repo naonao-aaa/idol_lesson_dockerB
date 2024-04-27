@@ -64,6 +64,11 @@ const UserEditScreen = () => {
       <Link to="/admin/userlist" className="btn btn-light my-3">
         戻る
       </Link>
+
+      {error && (
+        <Message variant="danger">{error.response.data.message}</Message>
+      )}
+
       <FormContainer>
         <h1>Edit User</h1>
         {!user ? (

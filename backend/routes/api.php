@@ -29,13 +29,13 @@ Route::get('/products', [ProductController::class, 'index']);
 // 特定のプラン取得
 Route::get('/products/{product}', [ProductController::class, 'show']);
 // (管理者)全てのプランを取得する
-Route::middleware('auth:sanctum')->get('/admin/products', [ProductController::class, 'getProducts']);
+Route::middleware(['auth:sanctum', 'admin'])->get('/admin/products', [ProductController::class, 'getProducts']);
 // (管理者)プランを作成する
-Route::middleware('auth:sanctum')->post('/admin/products', [ProductController::class, 'store']);
+Route::middleware(['auth:sanctum', 'admin'])->post('/admin/products', [ProductController::class, 'store']);
 // (管理者)プランの更新
-Route::middleware('auth:sanctum')->put('/admin/products/{product}', [ProductController::class, 'updateProduct']);
+Route::middleware(['auth:sanctum', 'admin'])->put('/admin/products/{product}', [ProductController::class, 'updateProduct']);
 // (管理者)プランの削除
-Route::middleware('auth:sanctum')->delete('/admin/products/{product}', [ProductController::class, 'destroy']);
+Route::middleware(['auth:sanctum', 'admin'])->delete('/admin/products/{product}', [ProductController::class, 'destroy']);
 
 
 // ログアウト
@@ -46,13 +46,13 @@ Route::post('/users/register', [UserController::class, 'register']);
 // ユーザープロフィールの更新
 Route::middleware('auth:sanctum')->put('/users/profile', [UserController::class, 'updateUserProfile']);
 // (管理者)全てのユーザーを取得する
-Route::middleware('auth:sanctum')->get('/admin/users', [UserController::class, 'getUsers']);
+Route::middleware(['auth:sanctum', 'admin'])->get('/admin/users', [UserController::class, 'getUsers']);
 // (管理者)特定のユーザーを取得する
-Route::middleware('auth:sanctum')->get('/admin/users/{user}', [UserController::class, 'getUser']);
+Route::middleware(['auth:sanctum', 'admin'])->get('/admin/users/{user}', [UserController::class, 'getUser']);
 // (管理者)ユーザーを削除する
-Route::middleware('auth:sanctum')->delete('/admin/users/{user}', [UserController::class, 'destroy']);
+Route::middleware(['auth:sanctum', 'admin'])->delete('/admin/users/{user}', [UserController::class, 'destroy']);
 // (管理者)ユーザーの更新
-Route::middleware('auth:sanctum')->put('/admin/users/{user}', [UserController::class, 'updateUser']);
+Route::middleware(['auth:sanctum', 'admin'])->put('/admin/users/{user}', [UserController::class, 'updateUser']);
 
 //新しい注文を作成する
 Route::middleware('auth:sanctum')->post('/orders', [OrderController::class, 'store']);
@@ -63,9 +63,9 @@ Route::middleware('auth:sanctum')->put('/orders/{order}/pay', [OrderController::
 // 自分(ログインユーザー)の注文を取得する。（「/orders/mine」や「/orders/my」のようなエンドポイントにすると、「No query results for model [App\Models\Order] 」というエラーが出た。一先ず「/my/orders」とすることで成功した。）
 Route::middleware('auth:sanctum')->get('/my/orders', [OrderController::class, 'getMyOrders']);
 // (管理者)全ての注文を取得する
-Route::middleware('auth:sanctum')->get('/admin/orders', [OrderController::class, 'getOrders']);
+Route::middleware(['auth:sanctum', 'admin'])->get('/admin/orders', [OrderController::class, 'getOrders']);
 // (管理者) 注文プランを遂行済みに更新する
-Route::middleware('auth:sanctum')->put('/admin/orders/{order}/completion', [OrderController::class, 'updateOrderToCompletion']);
+Route::middleware(['auth:sanctum', 'admin'])->put('/admin/orders/{order}/completion', [OrderController::class, 'updateOrderToCompletion']);
 
 // PayPalのクライアントIDを、フロント側に返す。
 Route::middleware('auth:sanctum')->get('/config/paypal', [OrderController::class, 'getPaypalClientId']);
