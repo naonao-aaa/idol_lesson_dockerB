@@ -3,13 +3,13 @@ services:
   app:
     build: ./infra/php
     volumes:
-      - ./src:/data
+      - ./backend:/data
   web:
     image: nginx:1.20-alpine
     ports:
       - 8080:80
     volumes:
-      - ./src:/data
+      - ./backend:/data
       - ./infra/nginx/default.conf:/etc/nginx/conf.d/default.conf
     working_dir: /data
   db:
